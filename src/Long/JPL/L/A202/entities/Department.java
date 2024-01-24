@@ -1,30 +1,29 @@
-package JPL.L.A202;
+package JPL.L.A202.entities;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class Department {
     private Map<String, Employee> employees;
     private String departmentName;
+
+    public Department() {
+    }
+
     public Department(String departmentName) {
         this.departmentName = departmentName;
-        employees = new HashMap<>();
+        employees=new HashMap<>();
     }
 
-    // Method to add an employee to the department
-    public void addEmployee(Employee employee) {
-        employees.put(employee.getSsn(), employee);
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(departmentName);
+        return sb.toString();
     }
 
-    // Method to get an employee by their identifier (e.g., Social Security Number)
-    public Employee getEmployee(String ssn) {
-        return employees.get(ssn);
-    }
-
-    // Method to get all employees in the department
-    public Map<String, Employee> getEmployees() {
-        return employees;
-    }
     public String getDepartmentName() {
         return departmentName;
     }

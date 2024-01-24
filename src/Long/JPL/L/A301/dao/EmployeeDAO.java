@@ -1,16 +1,18 @@
 /**
  * @project SaleManagement
  */
-package fa.training.dao;
+package JPL.L.A301.dao;
 
-import fa.training.entities.Employee;
+import JPL.L.A301.entities.Employee;
 
-/**
- * author Duy Bach.
- * @time 9:54:51 AM
- * @date Jun 22, 2019
- */
+import java.util.List;
+
 public interface EmployeeDAO {
+  boolean addEmployee(Employee employee);
+  boolean updateEmployee(Employee employee);
+  boolean deleteEmployee(int employeeId);
+  List<Employee> listAllEmployees();
 
-  Employee findById(int employeeId) ;
+  Employee findById(int employeeId);
+
 }

@@ -2,99 +2,90 @@
  * @project SaleManagement
  */
 
-package fa.training.dao;
+package JPL.L.A301.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
+import JPL.L.A301.common.Constant;
+import JPL.L.A301.common.DbQuery;
+import JPL.L.A301.entities.LineItem;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import fa.training.common.Constant;
-import fa.training.common.DBUtils;
-import fa.training.entities.LineItem;
-
-/**
- * author Duy Bach.
- * 
- * @time 2:25:27 PM
- * @date Jun 22, 2019
- */
 public class LineItemDAOImpl implements LineItemDAO {
+    Map<Integer, LineItem> lineItemMap;
 
-  private Connection connection = null;
-  private PreparedStatement preparedStatement = null;
-  private ResultSet results = null;
+    public LineItemDAOImpl() {
+        this.lineItemMap=new HashMap<>();
 
-  @Override
-  public boolean addLineItem(LineItem item) {
-    boolean check = false;
-    try {
-
-      connection = DBUtils.getInstance().getConnection();
-      preparedStatement = connection
-          .prepareStatement(Constant.LINEITEM_QUERY_ADD);
-      preparedStatement.setInt(1, item.getOrderID());
-      preparedStatement.setInt(2, item.getProID());
-      preparedStatement.setInt(3, item.getQuatity());
-      preparedStatement.setDouble(4, item.getPrice());
-
-      check = preparedStatement.executeUpdate() > 0;
-    } catch (SQLException e) {
-      // TODO: handle exception
-    } finally {
-      try {
-        if (connection != null) {
-          connection.close();
-        }
-        if (preparedStatement != null) {
-          preparedStatement.close();
-        }
-      } catch (SQLException e) {
-        // TODO Auto-generated catch block
-      }
     }
-    return check;
-  }
-
-  @Override
-  public List<LineItem> listLineItemsByOrder(int orderId) {
-    LineItem lineItem = null;
-    List<LineItem> items = new ArrayList<>();
-
-    try {
-      connection = DBUtils.getInstance().getConnection();
-      preparedStatement = connection
-          .prepareStatement(Constant.LINEITEM_QUERY_FIND_BY_ORDER_ID);
-      preparedStatement.setInt(1, orderId);
-      results = preparedStatement.executeQuery();
-      while (results.next()) {
-        lineItem = new LineItem();
-        lineItem.setOrderID(results.getInt("order_id"));
-        lineItem.setProID(results.getInt("product_id"));
-        lineItem.setQuatity(results.getInt("quantity"));
-        lineItem.setPrice(results.getDouble("price"));
-        items.add(lineItem);
-      }
-      return items;
-    } catch (SQLException e) {
-      // TODO: handle exception
-    } finally {
-      try {
-        if (connection != null) {
-          connection.close();
-        }
-        if (preparedStatement != null) {
-          preparedStatement.close();
-        }
-        if (results != null) {
-          results.close();
-        }
-      } catch (SQLException e) {
-      }
+    @Override
+    public boolean addLineItem(LineItem lineItem) {
+        return false;
     }
-    return items;
-  }
 
+    @Override
+    public boolean updateLineItem(LineItem lineItem) {
+        return false;
+    }
+
+    @Override
+    public boolean deleteLineItem(int orderId, int productId) {
+        return false;
+    }
+
+    @Override
+    public List<LineItem> listAllLineItems() {
+        return null;
+    }
+
+    @Override
+
+    public Map<Integer, LineItem> getAllItemsByOrderId(int orderId) {
+
+        try {
+            DbQuery.openConnection();
+
+            // Use a parameterized query to avoid SQL injection
+            String sql = Constant.LINEITEM_QUERY_FIND_BY_ORDER_ID;
+            ResultSet rs = DbQuery.executeSelectQuery(sql, orderId);
+
+            if (rs != null) {
+                try {
+                    while (rs.next()) {
+                        LineItem lineItem = new LineItem(
+                                rs.getInt("order_id"),
+                                rs.getInt("product_id"),
+                                rs.getInt("quantity"),
+                                rs.getDouble("price")
+                        );
+                        lineItemMap.put(rs.getInt("product_id"), lineItem);
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                } finally {
+                    rs.close();
+                }
+            }
+        } catch (Exception exception) {
+            // Handle or log the exception appropriately
+            exception.printStackTrace();
+        } finally {
+            DbQuery.closeConnection();
+        }
+
+        return lineItemMap;
+    }
+    public void printLineItems(Map<Integer, LineItem> lineItemMap) {
+        for (Map.Entry<Integer, LineItem> entry : lineItemMap.entrySet()) {
+            System.out.println(entry.toString());
+        }
+    }
+
+    @Override
+    public LineItem findById(int orderId, int productId) {
+        return null;
+    }
 }

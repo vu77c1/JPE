@@ -1,3 +1,5 @@
+package JPL.L.A201;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
@@ -5,42 +7,63 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JsonFileExample {
-    public static void main(String[] args) {
-        // Example data to write to JSON file
-        Map<String, String> dataToWrite = new HashMap<>();
-        dataToWrite.put("name", "John Doe");
-        dataToWrite.put("age", "30");
-        dataToWrite.put("city", "Example City");
+public class JsonFile {
 
-        // File paths
-        String filePathWrite = "example.json";
-        String filePathRead = "example.json";
+    public static void writeJsonToFile(Map<String, Airplane> newData, String filePath) {
 
-        // Write JSON to file
-        writeJsonToFile(dataToWrite, filePathWrite);
+            try {
+                // Read existing data from the file
+                Map<String, Airplane> existingData = readJsonFromFile(filePath);
 
-        // Read JSON from file
-        Map<String, String> dataRead = readJsonFromFile(filePathRead);
+                // Merge the new data with the existing data
+                existingData.putAll(newData);
 
-        // Display the read data
-        System.out.println("Data read from JSON file: " + dataRead);
+                // Write the merged data back to the file
+                ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.writeValue(new File(filePath), existingData);
+                System.out.println("Data written to JSON file successfully.");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
     }
-
-    private static void writeJsonToFile(Map<String, String> data, String filePath) {
+    public static Map<String, Airplane> readJsonFromFile(String filePath) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.writeValue(new File(filePath), data);
+            // Read existing data from the file
+            Map<String, Airplane> existingData = objectMapper.readValue(new File(filePath), Map.class);
+            return existingData;
+        } catch (IOException e) {
+//            e.printStackTrace();
+            return new HashMap<>(); // Return an empty map in case of an error
+        }
+    }
+    public static void writeJsonToFileAirport(Map<String, Airport> newData, String filePath) {
+
+        try {
+            // Read existing data from the file
+            Map<String, Airport> existingData = readJsonFromFileAirport(filePath);
+
+            // Merge the new data with the existing data
+            existingData.putAll(newData);
+
+            // Write the merged data back to the file
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.writeValue(new File(filePath), existingData);
             System.out.println("Data written to JSON file successfully.");
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
 
-    private static Map<String, String> readJsonFromFile(String filePath) {
+
+    }
+    public static Map<String, Airport> readJsonFromFileAirport(String filePath) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(new File(filePath), Map.class);
+            // Read existing data from the file
+            Map<String, Airport> existingData = objectMapper.readValue(new File(filePath), Map.class);
+            return existingData;
         } catch (IOException e) {
             e.printStackTrace();
             return new HashMap<>(); // Return an empty map in case of an error

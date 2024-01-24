@@ -1,60 +1,38 @@
 /**
  * @project SaleManagement
  */
-package fa.training.dao;
+package JPL.L.A301.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
-import fa.training.common.Constant;
-import fa.training.common.DBUtils;
-import fa.training.entities.Product;
+import JPL.L.A301.entities.Product;
 
-/**
- * author Duy Bach.
- * @time 2:25:15 PM
- * @date Jun 22, 2019
- */
+import java.util.List;
+
 public class ProductDAOImpl implements ProductDAO{
 
-  private Connection connection = null;
-  private PreparedStatement preparedStatement = null;
-  private ResultSet results = null;
-  
-  @Override
-  public Product findById(int productId) {
-    Product product = null;
-    try {
-      connection = DBUtils.getInstance().getConnection();
-      preparedStatement = connection.prepareStatement(Constant.PRODUCT_QUERY_FIND_BY_ID);
-      preparedStatement.setInt(1, productId);
-       results = preparedStatement.executeQuery();
-       if (results.next()) {
-          product = new Product();
-          product.setProID(results.getInt("product_id"));
-          product.setProName(results.getString("product_name"));
-          product.setLisPrice(results.getDouble("list_price"));
-       }
-    } catch (SQLException e) {
-       // TODO Auto-generated catch block
-    } finally {
-       try {
-          if (connection != null) {
-             connection.close();
-          }
-          if (preparedStatement != null) {
-            preparedStatement.close();
-          }
-          if (results != null) {
-             results.close();
-          }
-       } catch (SQLException e) {
-          // TODO Auto-generated catch block
-       }
-    }
-    return product;
-  }
 
+    @Override
+    public boolean addProduct(Product product) {
+        return false;
+    }
+
+    @Override
+    public boolean updateProduct(Product product) {
+        return false;
+    }
+
+    @Override
+    public boolean deleteProduct(int productId) {
+        return false;
+    }
+
+    @Override
+    public List<Product> listAllProducts() {
+        return null;
+    }
+
+    @Override
+    public Product findById(int productId) {
+        return null;
+    }
 }

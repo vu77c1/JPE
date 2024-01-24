@@ -2,182 +2,155 @@
  * @project SaleManagement
  */
 
-package fa.training.dao;
+package JPL.L.A301.dao;
+
+import JPL.L.A301.common.Constant;
+import JPL.L.A301.common.DbQuery;
+import JPL.L.A301.entities.Customer;
 
 import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import fa.training.common.Constant;
-import fa.training.common.DBUtils;
-import fa.training.entities.Customer;
+import java.util.Map;
 
 /**
  * author Duy Bach.
- * 
+ *
  * @time 2:24:39 PM
  * @date Jun 22, 2019
  */
 public class CustomerDAOImpl implements CustomerDAO {
+    private Map<Integer, Customer> customerMap;
 
-  private Connection connection = null;
-  private CallableStatement caStatement = null;
-  private PreparedStatement preparedStatement = null;
-  private ResultSet results = null;
-
-  @Override
-  public boolean addCustomer(Customer customer) {
-    boolean check = false;
-    try {
-
-      connection = DBUtils.getInstance().getConnection();
-
-      caStatement = connection.prepareCall(Constant.CUSTOMER_QUERY_ADD);
-      caStatement.setInt(1, customer.getCusID());
-      caStatement.setString(2, customer.getCusName());
-      caStatement.registerOutParameter(3, Types.INTEGER);
-      caStatement.executeUpdate();
-      check = caStatement.getInt(3) > 0;
-    } catch (SQLException e) {
-      e.printStackTrace();
-    } finally {
-      try {
-        if (connection != null) {
-          connection.close();
-        }
-        if (caStatement != null) {
-          caStatement.close();
-        }
-      } catch (SQLException e) {
-        e.printStackTrace();
-      }
+    public CustomerDAOImpl() {
+        this.customerMap = new HashMap<>();
     }
-    return check;
-  }
 
-  @Override
-  public boolean updateCustomer(Customer customer) {
-    boolean check = false;
-    try {
+    @Override
+    public boolean addCustomer(Customer customer) {
+        boolean success = false;
 
-      connection = DBUtils.getInstance().getConnection();
-      caStatement = connection.prepareCall(Constant.CUSTOMER_QUERY_UPDATE);
-      caStatement.setInt(1, customer.getCusID());
-      caStatement.setString(2, customer.getCusName());
-      caStatement.registerOutParameter(3, Types.INTEGER);
-      caStatement.executeUpdate();
-      check = caStatement.getInt(3) > 0;
-    } catch (SQLException e) {
-    } finally {
-      try {
-        if (connection != null) {
-          connection.close();
+        try {
+            DbQuery.openConnection();
+
+            // Use a callable statement to call the stored procedure
+            String sql = "{ call usp_addCustomer(?, ?) }";
+            try (CallableStatement cs = DbQuery.getConnection().prepareCall(sql)) {
+                cs.setString(1, customer.getCustomerName());
+                cs.setInt(2, customer.getCustomerId());
+                cs.execute();
+                success = true;
+            }
+
+        } catch (Exception exception) {
+            // Handle or log the exception appropriately
+            exception.printStackTrace();
+        } finally {
+            DbQuery.closeConnection();
         }
-        if (caStatement != null) {
-          caStatement.close();
-        }
-      } catch (SQLException e) {
-      }
+
+        return success;
     }
-    return check;
-  }
 
-  @Override
-  public boolean deleteCustomer(int idCus) {
-    boolean check = false;
-    try {
-
-      connection = DBUtils.getInstance().getConnection();
-      caStatement = connection.prepareCall(Constant.CUSTOMER_QUERY_DELETE);
-      caStatement.setInt(1, idCus);
-      caStatement.registerOutParameter(2, Types.INTEGER);
-      check = caStatement.getInt(2) > 0;
-    } catch (SQLException e) {
-    } finally {
-      try {
-        if (connection != null) {
-          connection.close();
-        }
-        if (caStatement != null) {
-          caStatement.close();
-        }
-      } catch (SQLException e) {
-      }
+    @Override
+    public boolean updateCustomer(Customer customer) {
+        return false;
     }
-    return check;
-  }
 
-  @Override
-  public List<Customer> listAllCustomers() {
-    List<Customer> customers = null;
-    Customer customer = null;
-    try {
-      customers = new ArrayList<>();
-      connection = DBUtils.getInstance().getConnection();
-      preparedStatement = connection
-          .prepareStatement(Constant.CUSTOMER_QUERY_FIND_ALL);
-      results = preparedStatement.executeQuery();
-      while (results.next()) {
-        customer = new Customer();
+    @Override
+    public boolean deleteCustomer(int idCus) {
+        boolean success = false;
 
-        customer.setCusID(results.getInt("customer_id"));
-        customer.setCusName(results.getString("customer_name"));
+        try {
+            DbQuery.openConnection();
 
-        customers.add(customer);
-      }
-    } catch (SQLException e) {
-    } finally {
-      try {
-        if (connection != null) {
-          connection.close();
+            // Use a callable statement to call the stored procedure
+            String sql =Constant.CUSTOMER_QUERY_DELETE;
+            try (CallableStatement cs = DbQuery.getConnection().prepareCall(sql)) {
+                cs.setInt(1, idCus);
+                cs.registerOutParameter(2,Types.BIT);
+                cs.execute();
+                success = cs.getBoolean(2);
+            }
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        } finally {
+            DbQuery.closeConnection();
         }
-        if (preparedStatement != null) {
-          preparedStatement.close();
-        }
-        if (results != null) {
-          results.close();
-        }
-      } catch (SQLException e) {
-      }
+
+        return success;
     }
-    return customers;
-  }
 
-  @Override
-  public Customer findById(int id) {
-    Customer customer = null;
-    try {
-      connection = DBUtils.getInstance().getConnection();
-      preparedStatement = connection
-          .prepareStatement(Constant.CUSTOMER_QUERY_FIND_BY_ID);
-      preparedStatement.setInt(1, id);
-      results = preparedStatement.executeQuery();
-      if (results.next()) {
-        customer = new Customer();
-        customer.setCusID(results.getInt("customer_id"));
-        customer.setCusName(results.getString("customer_name"));
-      }
-    } catch (SQLException e) {
-    } finally {
-      try {
-        if (connection != null) {
-          connection.close();
+    @Override
+    public Map<Integer, Customer> getAllCustomer() {
+        try {
+            DbQuery.openConnection();
+            String sql = Constant.CUSTOMER_QUERY_FIND_ALL;
+            ResultSet rs = DbQuery.executeSelectQuery(sql);
+            if (rs != null) {
+                try {
+                    while (rs.next()) {
+                        customerMap.put(rs.getInt("customer_id"), new Customer(
+                                rs.getInt("customer_id"),
+                                rs.getString("customer_name")
+                        ));
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+
+        } catch (Exception exception) {
+
+        } finally {
+         DbQuery.closeConnection();
+
+
         }
-        if (preparedStatement != null) {
-          preparedStatement.close();
-        }
-        if (results != null) {
-          results.close();
-        }
-      } catch (SQLException e) {
-      }
+        return customerMap;
+
     }
-    return customer;
-  }
+    public void printListCustomer(Map<Integer, Customer> customerMap) {
+        for (Customer customer : customerMap.values()) {
+            System.out.println(customer.toString());
+        }
+    }
 
+    @Override
+    public Customer findById(int id) {
+        return null;
+    }
+
+    @Override
+    public Map<Integer, Customer> getListCustomer() {
+        try {
+            DbQuery.openConnection();
+            String sql = Constant.CUSTOMER_QUERY_SELECT;
+            ResultSet rs = DbQuery.executeSelectQuery(sql);
+            if (rs != null) {
+                try {
+                    while (rs.next()) {
+                        customerMap.put(rs.getInt("customer_id"), new Customer(
+                                rs.getInt("customer_id"),
+                                rs.getString("customer_name")
+                        ));
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+
+        } catch (Exception exception) {
+
+        } finally {
+            DbQuery.closeConnection();
+
+
+        }
+        return customerMap;
+    }
 }

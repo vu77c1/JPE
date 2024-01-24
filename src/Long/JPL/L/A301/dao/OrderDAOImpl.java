@@ -2,204 +2,88 @@
  * @project SaleManagement
  */
 
-package fa.training.dao;
+package JPL.L.A301.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
+import JPL.L.A301.common.Constant;
+import JPL.L.A301.common.DbQuery;
+import JPL.L.A301.entities.Customer;
+import JPL.L.A301.entities.Order;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import fa.training.common.Constant;
-import fa.training.common.DBUtils;
-import fa.training.entities.Order;
-
-/**
- * author Duy Bach.
- * 
- * @time 2:24:52 PM
- * @date Jun 22, 2019
- */
 public class OrderDAOImpl implements OrderDAO {
+    Map<Integer, Order> orders;
 
-  private Connection connection = null;
-  private PreparedStatement preparedStatement = null;
-  private ResultSet results = null;
-  private DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
-
-  @Override
-  public boolean addOrder(Order order) {
-    boolean check = false;
-    try {
-      connection = DBUtils.getInstance().getConnection();
-      preparedStatement = connection.prepareCall(Constant.ORDER_QUERY_ADD);
-      preparedStatement.setInt(1, order.getOrderID());
-      preparedStatement.setString(2, dateFormat.format(order.getOrderDate()));
-      preparedStatement.setInt(3, order.getCusID());
-      preparedStatement.setInt(4, order.getEmpID());
-      preparedStatement.setDouble(5, order.getTotal());
-      check = preparedStatement.executeUpdate() > 0;
-    } catch (SQLException e) {
-      // TODO: handle exception
-    } finally {
-      try {
-        if (connection != null) {
-          connection.close();
-        }
-        if (preparedStatement != null) {
-          preparedStatement.close();
-        }
-      } catch (SQLException e) {
-        // TODO: handle exception
-      }
+    public OrderDAOImpl() {
+        orders=new HashMap<>();
     }
-    return check;
-  }
 
-  @Override
-  public boolean updateOrderTotal(int orderId) {
-    boolean check = false;
-    try {
-      connection = DBUtils.getInstance().getConnection();
-      preparedStatement = connection
-          .prepareStatement(Constant.ORDER_QUERY_UPDATE_TOTAL);
-      preparedStatement.setInt(1, orderId);
-      preparedStatement.setInt(2, orderId);
-      check = preparedStatement.executeUpdate() > 0;
-    } catch (SQLException e) {
-      // TODO: handle exception
-    } finally {
-      try {
-        if (connection != null) {
-          connection.close();
-        }
-        if (preparedStatement != null) {
-          preparedStatement.close();
-        }
-      } catch (SQLException e) {
-        // TODO Auto-generated catch block
-      }
+
+    @Override
+    public boolean addOrder(Order order) {
+        return false;
     }
-    return check;
-  }
 
-  @Override
-  public List<Order> getCustomerOrdersByCus(int customerId) {
-    List<Order> orders = new ArrayList<>();
-    Order order = null;
-
-    try {
-      connection = DBUtils.getInstance().getConnection();
-      preparedStatement = connection
-          .prepareCall(Constant.ORDER_QUERY_FIND_BY_CUS_ID);
-      preparedStatement.setInt(1, customerId);
-
-      results = preparedStatement.executeQuery();
-      while (results.next()) {
-        order = new Order();
-        order.setOrderID(results.getInt("order_id"));
-        order.setOrderDate(dateFormat.parse(results.getString("order_date")));
-        order.setCusID(results.getInt("customer_id"));
-        order.setEmpID(results.getInt("employee_id"));
-        order.setTotal(results.getInt("total"));
-
-        orders.add(order);
-      }
-
-    } catch (SQLException | ParseException e) {
-      // TODO: handle exception
-    } finally {
-      try {
-        if (connection != null) {
-          connection.close();
-        }
-        if (preparedStatement != null) {
-          preparedStatement.close();
-        }
-        if (results != null) {
-          results.close();
-        }
-      } catch (SQLException e) {
-        // TODO Auto-generated catch block
-      }
+    @Override
+    public boolean updateOrder(Order order) {
+        return false;
     }
-    return orders;
-  }
 
-  @Override
-  public Order findById(int orderId) {
-    Order order = null;
-
-    try {
-      connection = DBUtils.getInstance().getConnection();
-      preparedStatement = connection
-          .prepareCall(Constant.ORDER_QUERY_FIND_BY_ID);
-      preparedStatement.setInt(1, orderId);
-      results = preparedStatement.executeQuery();
-      if (results.next()) {
-        order = new Order();
-        order.setOrderID(results.getInt("order_id"));
-        order.setOrderDate(dateFormat.parse(results.getString("order_date")));
-        order.setCusID(results.getInt("customer_id"));
-        order.setEmpID(results.getInt("employee_id"));
-        order.setTotal(results.getInt("total"));
-
-      }
-
-    } catch (SQLException | ParseException e) {
-      // TODO: handle exception
-    } finally {
-      try {
-        if (connection != null) {
-          connection.close();
-        }
-        if (preparedStatement != null) {
-          preparedStatement.close();
-        }
-        if (results != null) {
-          results.close();
-        }
-      } catch (SQLException e) {
-        // TODO Auto-generated catch block
-      }
+    @Override
+    public boolean deleteOrder(int orderId) {
+        return false;
     }
-    return order;
-  }
 
-  @Override
-  public Double computeOrderTotal(int orderId) {
-    Double totalPrice = null;
-    try {
-      connection = DBUtils.getInstance().getConnection();
-      preparedStatement = connection
-          .prepareCall(Constant.ORDER_QUERY_COMPUTE_TOTAL);
-      preparedStatement.setInt(1, orderId);
-      results = preparedStatement.executeQuery();
-      if (results.next()) {
-        totalPrice = results.getDouble("total_price");
-      }
-    } catch (SQLException e) {
-      // TODO: handle exception
-    } finally {
-      try {
-        if (connection != null) {
-          connection.close();
+    @Override
+    public Map<Integer, Order> getAllOrdersByCustomerId(int customerId) {
+
+        try {
+            DbQuery.openConnection();
+
+            // Use a parameterized query to avoid SQL injection
+            String sql = Constant.ORDER_QUERY_FIND_BY_CUSTOMER_ID;
+            ResultSet rs = DbQuery.executeSelectQuery(sql, customerId);
+
+            if (rs != null) {
+                try {
+                    while (rs.next()) {
+                        Order order = new Order(
+                                rs.getInt("order_id"),
+                                rs.getDate("order_date"),
+                                rs.getInt("customer_id"),
+                                rs.getInt("employee_id"),
+                                rs.getDouble("total")
+                        );
+                        orders.put(rs.getInt("order_id"),order);
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                } finally {
+                    rs.close();
+                }
+            }
+        } catch (Exception exception) {
+            // Handle or log the exception appropriately
+            exception.printStackTrace();
+        } finally {
+            DbQuery.closeConnection();
         }
-        if (preparedStatement != null) {
-          preparedStatement.close();
-        }
-        if (results != null) {
-          results.close();
-        }
-      } catch (SQLException e) {
-        // TODO Auto-generated catch block
-      }
+
+        return orders;
+
     }
-    return totalPrice;
-  }
+    public void printListOrder(Map<Integer, Order> orderMap) {
+        for (Order order : orderMap.values()) {
+            System.out.println(order.toString());
+        }
+    }
 
+    @Override
+    public Order findById(int orderId) {
+        return null;
+    }
 }

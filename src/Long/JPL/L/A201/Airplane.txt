@@ -1,24 +1,10 @@
-FixedWing{
-  id=
-  'FW12345',
-  model=
-  '2',
-  cruiseSpeed=2.0,
-  emptyWeight=2.0,
-  maxTakeoffWeight=2.0,
-  planeType=
-  'Cargo',
-  minRunwaySize=2.0
-}
-FixedWing{
-  id=
-  'FW12343',
-  model=
-  '2',
-  cruiseSpeed=2.0,
-  emptyWeight=3.0,
-  maxTakeoffWeight=4.0,
-  planeType=
-  'Long_range',
-  minRunwaySize=2.0
-}
+
+| FW12345    | 2      | 2.0          | 2.0         | 2.0                | CAG        | 2.0             |
+| FW33333    | 2      | 2.0          | 2.0         | 2.0                | LGR        | 2.0             |
+| RW12345    | 2      | 2.0          | 2.0         | 2.0                | 2.0    |
+| RW34444    | 2      | 2.0          | 2.0         | 2.0                | 2.0    |
+| FW12346    | 3      | 3.0          | 3.0         | 3.0                | LGR        | 2.0             |
+| RW12344    | 3      | 3.0          | 3.0         | 3.0                | 2.0    |
+| FW12355    | 2      | 2.0          | 2.0         | 1.0                | LGR        | 1.0             |
+| RW12355    | 2      | 2.0          | 3.0         | 2.0                | 1.0    |
+| FW33339    |        | 4.0          | 34.0        | 34.0               | LGR        | 2.0             |

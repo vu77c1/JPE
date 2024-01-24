@@ -1,11 +1,12 @@
 /**
  * @project SaleManagement
  */
-package fa.training.dao;
+package JPL.L.A301.dao;
+
+import JPL.L.A301.entities.Customer;
 
 import java.util.List;
-
-import fa.training.entities.Customer;
+import java.util.Map;
 
 /**
  * author Duy Bach.
@@ -35,12 +36,13 @@ public interface CustomerDAO {
   /**
    * @return
    */
-  List<Customer> listAllCustomers();
+  Map<Integer,Customer> getAllCustomer();
 
   /**
    * @param id
    * @return
    */
   Customer findById(int id);
+  Map<Integer,Customer> getListCustomer();
   
 }

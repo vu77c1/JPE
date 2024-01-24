@@ -1,30 +1,51 @@
-/**
- * @project SaleManagement
- */
+package JPL.L.A301.dao;
 
-package fa.training.dao;
+import JPL.L.A301.entities.LineItem;
 
 import java.util.List;
+import java.util.Map;
 
-import fa.training.entities.LineItem;
-
-/**
- * author Duy Bach.
- * 
- * @time 9:55:27 AM
- * @date Jun 22, 2019
- */
 public interface LineItemDAO {
-  
-  /**
-   * @param item
-   * @return
-   */
-  boolean addLineItem(LineItem item);
 
   /**
-   * @param orderId
-   * @return
+   * Adds a new line item to the data store.
+   *
+   * @param lineItem The line item to be added.
+   * @return true if the line item was added successfully, false otherwise.
    */
-  List<LineItem> listLineItemsByOrder(int orderId);
+  boolean addLineItem(LineItem lineItem);
+
+  /**
+   * Updates an existing line item in the data store.
+   *
+   * @param lineItem The line item to be updated.
+   * @return true if the line item was updated successfully, false otherwise.
+   */
+  boolean updateLineItem(LineItem lineItem);
+
+  /**
+   * Deletes a line item from the data store based on its order ID and product ID.
+   *
+   * @param orderId    The ID of the order associated with the line item.
+   * @param productId  The ID of the product associated with the line item.
+   * @return true if the line item was deleted successfully, false otherwise.
+   */
+  boolean deleteLineItem(int orderId, int productId);
+
+  /**
+   * Retrieves a list of all line items from the data store.
+   *
+   * @return List of all line items.
+   */
+  List<LineItem> listAllLineItems();
+  Map<Integer, LineItem> getAllItemsByOrderId(int orderId);
+
+  /**
+   * Finds a line item in the data store by its order ID and product ID.
+   *
+   * @param orderId   The ID of the order associated with the line item.
+   * @param productId The ID of the product associated with the line item.
+   * @return The found line item or null if not found.
+   */
+  LineItem findById(int orderId, int productId);
 }

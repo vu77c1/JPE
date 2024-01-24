@@ -1,46 +1,48 @@
-/**
- * @project SaleManagement
- */
-package fa.training.dao;
+package JPL.L.A301.dao;
+
+import JPL.L.A301.entities.Order;
 
 import java.util.List;
+import java.util.Map;
 
-import fa.training.entities.Order;
-
-/**
- * author Duy Bach.
- * @time 9:56:31 AM
- * @date Jun 22, 2019
- */
 public interface OrderDAO {
 
   /**
-   * @param order
-   * @return
+   * Adds a new order to the data store.
+   *
+   * @param order The order to be added.
+   * @return true if the order was added successfully, false otherwise.
    */
-  boolean addOrder(Order order) ;
-  
+  boolean addOrder(Order order);
+
   /**
-   * @param order
-   * @return
+   * Updates an existing order in the data store.
+   *
+   * @param order The order to be updated.
+   * @return true if the order was updated successfully, false otherwise.
    */
-  boolean updateOrderTotal(int orderId) ;
-  
+  boolean updateOrder(Order order);
+
   /**
-   * @return
+   * Deletes an order from the data store based on its ID.
+   *
+   * @param orderId The ID of the order to be deleted.
+   * @return true if the order was deleted successfully, false otherwise.
    */
-  List<Order> getCustomerOrdersByCus(int customerId) ;
-  
+  boolean deleteOrder(int orderId);
+
   /**
-   * @param orderId
-   * @return
+   * Retrieves a list of all orders from the data store.
+   *
+   * @return List of all orders.
    */
-  Order findById(int orderId) ;
-  
+  Map<Integer,Order> getAllOrdersByCustomerId(int customerId);
+
   /**
-   * @method computeOrderTotal 
-   * @param orderId
-   * @return
+   * Finds an order in the data store by its ID.
+   *
+   * @param orderId The ID of the order to find.
+   * @return The found order or null if not found.
    */
-  Double computeOrderTotal(int orderId);
+  Order findById(int orderId);
 }

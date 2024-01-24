@@ -1,0 +1,27 @@
+[
+  "hourlyEmployee",
+  {
+    "rate": 3.0,
+    "workingHours": 3.0,
+    "ssn": "1",
+    "firstName": "12",
+    "lastName": "12",
+    "birthDate": "12/12/1993",
+    "phone": "12121212",
+    "email": "1@gmail.com",
+    "departmentName": "3"
+  },
+  "hourlyEmployee",
+  {
+    "rate": 3.0,
+    "workingHours": 3.0,
+    "ssn": "3",
+    "firstName": "3",
+    "lastName": "3",
+    "birthDate": "2/2/2/2",
+    "phone": "2222222222",
+    "email": "f@gmail.com",
+    "departmentName": "3"
+  }
+]
+

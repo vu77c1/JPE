@@ -1,3 +1,4 @@
+package JPL.L.A101;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,12 +16,12 @@ public class InputValidator {
             try {
                 System.out.print(prompt);
                 String dateString = scanner.nextLine().trim();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/uuuu");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
                 dateFormat.setLenient(false);
                 date = dateFormat.parse(dateString);
                 isValid = true;
             } catch (ParseException ex) {
-                System.out.println("\u001B[31m\t\t\tError: Please enter a valid date in the format 'dd/MM/yyyy'.\u001B[0m");
+                System.out.println("\u001B[31mError: Please enter a valid date in the format 'dd/MM/yyyy'.\u001B[0m");
             }
         } while (!isValid);
 
@@ -84,6 +85,30 @@ public class InputValidator {
         } while (!isValid);
 
         return userInput;
+    }
+    public static String validateIsbn(String prompt) {
+        Scanner scanner = new Scanner(System.in);
+        String isbn;
+        boolean validIsbn;
+
+        do {
+            System.out.print(prompt);
+            isbn = scanner.nextLine();
+            validIsbn = isValidIsbn(isbn);
+
+            if (!validIsbn) {
+                System.out.println("Error: Please enter a valid ISBN.");
+            }
+
+        } while (!validIsbn);
+
+        return isbn;
+    }
+
+    private static boolean isValidIsbn(String isbn) {
+        // ISBN nên có từ 10-17 chữ số với dấu gạch ngang
+        return isbn.matches("^\\d{3}-\\d{1,5}-\\d{1,7}-\\d{1,7}(?:-\\d)?$");
+
     }
 
 

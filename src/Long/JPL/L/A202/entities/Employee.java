@@ -1,4 +1,4 @@
-package JPL.L.A202;
+package JPL.L.A202.entities;
 
 public class Employee implements Payable {
     public String getSsn() {
@@ -29,13 +29,15 @@ public class Employee implements Payable {
         return birthDate;
     }
 
-    public Employee(String ssn, String firstName, String lastName, String birthDate, String phone, String email) {
+
+    public Employee(String ssn, String firstName, String lastName, String birthDate, String phone, String email,String departmentName ) {
         this.ssn = ssn;
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthDate = birthDate;
         this.phone = phone;
         this.email = email;
+        this.departmentName=departmentName;
     }
 
     public Employee() {
@@ -61,24 +63,21 @@ public class Employee implements Payable {
         this.email = email;
     }
 
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("Employee{");
-        sb.append("ssn='").append(ssn).append('\'');
-        sb.append(", firstName='").append(firstName).append('\'');
-        sb.append(", lastName='").append(lastName).append('\'');
-        sb.append(", birthDate='").append(birthDate).append('\'');
-        sb.append(", phone='").append(phone).append('\'');
-        sb.append(", email='").append(email).append('\'');
-        sb.append('}');
-        return sb.toString();
-    }
-
     private String ssn;
     private String firstName;
     private String lastName;
     private String birthDate;
     private String phone;
     private String email;
+
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
+    }
+
+    private String departmentName;
 
 }
