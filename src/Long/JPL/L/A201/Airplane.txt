@@ -1,0 +1,24 @@
+FixedWing{
+  id=
+  'FW12345',
+  model=
+  '2',
+  cruiseSpeed=2.0,
+  emptyWeight=2.0,
+  maxTakeoffWeight=2.0,
+  planeType=
+  'Cargo',
+  minRunwaySize=2.0
+}
+FixedWing{
+  id=
+  'FW12343',
+  model=
+  '2',
+  cruiseSpeed=2.0,
+  emptyWeight=3.0,
+  maxTakeoffWeight=4.0,
+  planeType=
+  'Long_range',
+  minRunwaySize=2.0
+}
